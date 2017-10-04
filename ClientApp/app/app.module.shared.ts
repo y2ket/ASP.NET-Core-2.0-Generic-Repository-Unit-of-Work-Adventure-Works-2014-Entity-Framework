@@ -8,6 +8,8 @@ import { AppComponent } from './components/app/app.component';
 import { NavMenuComponent } from './components/navmenu/navmenu.component';
 import { HomeComponent } from './components/home/home.component';
 import { DetailsComponent } from './components/details/details.component';
+import { newEmployeeComponent } from './components/newEmployee/newEmployee.component';
+import { editEmployeeComponent } from './components/editEmployee/editEmployee.component';
  
 @NgModule({
     declarations: [
@@ -24,6 +26,8 @@ import { DetailsComponent } from './components/details/details.component';
             { path: '', redirectTo: 'home', pathMatch: 'full' },
             { path: 'home', component: HomeComponent },
             { path: 'details/:id', component: DetailsComponent },
+            { path: 'new', component: newEmployeeComponent },
+            { path: 'edit/:id', component: editEmployeeComponent },
             { path: '**', redirectTo: 'home' }
         ])
     ]

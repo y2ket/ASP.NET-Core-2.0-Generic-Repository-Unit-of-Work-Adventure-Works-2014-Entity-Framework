@@ -798,7 +798,7 @@ namespace EMS2.Models
 
                 entity.Property(e => e.ErrorMessage)
                     .IsRequired()
-                    .HasColumnType("nvarchar");
+                    .HasColumnType("nvarchar(4000)");
 
                 entity.Property(e => e.ErrorProcedure).HasMaxLength(126);
 
