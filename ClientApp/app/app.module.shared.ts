@@ -10,14 +10,17 @@ import { HomeComponent } from './components/home/home.component';
 import { DetailsComponent } from './components/details/details.component';
 import { newEmployeeComponent } from './components/newEmployee/newEmployee.component';
 import { editEmployeeComponent } from './components/editEmployee/editEmployee.component';
- 
+import { EmployeeServices } from './Services/services';
 @NgModule({
     declarations: [
         AppComponent,
         NavMenuComponent,
         DetailsComponent,
+        newEmployeeComponent,
+        editEmployeeComponent,
         HomeComponent
     ],
+    providers: [EmployeeServices, HttpModule],
     imports: [
         CommonModule,
         HttpModule,

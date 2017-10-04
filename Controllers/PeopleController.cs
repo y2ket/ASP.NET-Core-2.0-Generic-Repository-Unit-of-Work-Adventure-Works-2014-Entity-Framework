@@ -28,13 +28,14 @@ namespace EMS2.Controllers
             var listData = await (from per in _context.Person 
                                   join emp in _context.Employee on per.BusinessEntityId equals emp.BusinessEntityId
                                   join pp in _context.PersonPhone on per.BusinessEntityId equals pp.BusinessEntityId
+                                  join ea in _context.EmailAddress on per.BusinessEntityId equals ea.BusinessEntityId
                                   select new
                                   {
                                       per.BusinessEntityId,
                                       per.LastName,
                                       per.FirstName,
                                       emp.JobTitle,
-                                      per.EmailAddress,
+                                      ea.EmailAddress1,
                                       pp.PhoneNumber
                                   }
                           ).ToListAsync();
@@ -45,7 +46,7 @@ namespace EMS2.Controllers
                 Obj.LastName = x.LastName;
                 Obj.FirstName = x.FirstName;
                 Obj.JobTitle = x.JobTitle;
-                Obj.EmailAddress = x.JobTitle;
+                Obj.EmailAddress = x.EmailAddress1;
                 Obj.PhoneNumber = x.PhoneNumber;
                 ilIst.Add(Obj);
             });

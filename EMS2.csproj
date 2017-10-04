@@ -26,12 +26,14 @@
   <ItemGroup>
     <None Remove="ClientApp\app\components\details\details.component.ts" />
     <None Remove="ClientApp\app\components\newEmployee\newEmployee.component.ts" />
+    <None Remove="ClientApp\app\Services\services.ts" />
   </ItemGroup>
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\app\components\details\details.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\editEmployee\editEmployee.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\newEmployee\newEmployee.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\Services\services.ts" />
   </ItemGroup>
 
   <ItemGroup>
