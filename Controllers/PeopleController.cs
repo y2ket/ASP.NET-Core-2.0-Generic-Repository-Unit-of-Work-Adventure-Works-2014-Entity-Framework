@@ -53,5 +53,15 @@ namespace EMS2.Controllers
 
             return Json(ilIst);
         }
+        [HttpPost]
+        public IActionResult AddEmployee([FromBody]Employee empObj)
+        {
+            
+            _context.Employee.Add(empObj);
+            _context.SaveChanges();
+            return Json("OK");
+
+
+        }
     }
 }
