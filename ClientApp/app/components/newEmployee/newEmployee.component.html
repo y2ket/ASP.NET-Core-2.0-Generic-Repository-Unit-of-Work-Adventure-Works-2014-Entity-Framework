@@ -67,11 +67,11 @@
                     <div class="form-group">
                         <label for="JobTitle" class="col-sm-4 control-label">Job Title</label>
                         <div class="col-sm-8">
-                            <select class="form-control" name="Project"
-                                    formControlName="Project">
+                            <select class="form-control" name="JobTitle"
+                                    formControlName="JobTitle">
                                 <option >---Select---</option>
-                                <option *ngFor="let data of JobTitleList" value={{data.JobTitleId}}>
-                                    {{data.JobTitle}}
+                                <option *ngFor="let data of JobTitlesList" value={{data.jobTitleId}}>
+                                    {{data.jobTitle}}
                                 </option>
                             </select>
 
