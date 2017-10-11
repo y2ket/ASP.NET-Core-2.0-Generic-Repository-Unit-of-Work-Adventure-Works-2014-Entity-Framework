@@ -19,6 +19,6 @@ export class EmployeeServices {
             'application/json; charset=utf-8'
         });
         let options = new RequestOptions({ headers : headers });
-        return this.http.post('http://localhost:54273/api/employee', JSON.stringify(empObj), options);
+        return this.http.post('http://localhost:62362/api/employee', JSON.stringify(empObj), options);
     }  
 }   

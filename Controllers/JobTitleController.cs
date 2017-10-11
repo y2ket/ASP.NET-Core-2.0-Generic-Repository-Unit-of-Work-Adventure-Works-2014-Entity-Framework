@@ -28,7 +28,7 @@ namespace EMS.Controllers
             var Job = await (from data in _context.Employee
                                  select new
                                  {
-                                     JobTitle = data.JobTitle,
+                                     JobTitle = data.JobTitle
                                      //BusinessEntityId = data.BusinessEntityId                                     
                                  }).Distinct().ToListAsync();
             int i = 1;

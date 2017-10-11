@@ -39,38 +39,51 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="Email" class="col-sm-4 control-label">Email</label>
+                        <label for="EmailAddress" class="col-sm-4 control-label">Email</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control"
-                                   name="Email" placeholder="Employee Email"
-                                   formControlName="Email">
+                                   name="EmailAddress" placeholder="Employee Email"
+                                   formControlName="EmailAddress">
 
                         </div>
-                        <div *ngIf="!formData.get('Email').valid && formData.get('Email').dirty"
+                        <div *ngIf="!formData.get('EmailAddress').valid && formData.get('EmailAddress').dirty"
                              class="col-sm-8 col-sm-offset-4" style="color:red">
                             Add Employee Email  
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="Phone" class="col-sm-4 control-label">Phone</label>
+                        <label for="PhoneNumber" class="col-sm-4 control-label">Phone</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control"
-                                   name="Phone" placeholder="Employee Phone"
-                                   formControlName="Phone">
+                                   name="PhoneNumber" placeholder="Employee Phone"
+                                   formControlName="PhoneNumber">
 
                         </div>
-                        <div *ngIf="!formData.get('Phone').valid && formData.get('Phone').dirty"
+                        <div *ngIf="!formData.get('PhoneNumber').valid && formData.get('PhoneNumber').dirty"
                              class="col-sm-8 col-sm-offset-4" style="color:red">
                             Add Employee Phone
                         </div>
                     </div>
+                    <!--<div class="form-group">
+                        <label for="BusinessEntityID" class="col-sm-4 control-label">BusinessEntityID</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control"
+                                   name="BusinessEntityID" placeholder="Employee BusinessEntityID"
+                                   formControlName="BusinessEntityID">
+
+                        </div>
+                        <div *ngIf="!formData.get('BusinessEntityID').valid && formData.get('BusinessEntityID').dirty"
+                             class="col-sm-8 col-sm-offset-4" style="color:red">
+                            Add Employee BusinessEntityID
+                        </div>
+                    </div>-->
                     <div class="form-group">
                         <label for="JobTitle" class="col-sm-4 control-label">Job Title</label>
                         <div class="col-sm-8">
                             <select class="form-control" name="JobTitle"
                                     formControlName="JobTitle">
                                 <option >---Select---</option>
-                                <option *ngFor="let data of JobTitlesList" value={{data.jobTitleId}}>
+                                <option *ngFor="let data of JobTitlesList" value={{data.jobTitle}}>
                                     {{data.jobTitle}}
                                 </option>
                             </select>

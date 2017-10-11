@@ -20,8 +20,9 @@ export class newEmployeeComponent {
             'FirstName': new FormControl('', [Validators.required]),
             'LastName': new FormControl('', [Validators.required]),
             'JobTitle': new FormControl('', Validators.required),
-            'Email': new FormControl('', Validators.required),
-            'Phone': new FormControl('', Validators.required)          
+            'EmailAddress': new FormControl('', Validators.required),
+            'PhoneNumber': new FormControl('', Validators.required)
+            //'BusinessEntityID': new FormControl('', Validators.required)  
         });
     }
     customValidator(control: FormControl): { [s: string]: boolean } {
@@ -35,12 +36,13 @@ export class newEmployeeComponent {
 
     submitData() {
         if (this.formData.valid) {
-            var Obj = {
+            var Obj = {               
                 FirstName: this.formData.value.FirstName,
                 LastName: this.formData.value.LastName,
                 JobTitle: this.formData.value.JobTitle,                
-                Email: this.formData.value.Email,
-                Phone: this.formData.value.Phone,
+                EmailAddress: this.formData.value.EmailAddress,
+                PhoneNumber: this.formData.value.PhoneNumber
+                //BusinessEntityID: this.formData.value.BusinessEntityID
             };
             this.empService.postData(Obj).subscribe();
             alert("Employee Inserted Successfully");

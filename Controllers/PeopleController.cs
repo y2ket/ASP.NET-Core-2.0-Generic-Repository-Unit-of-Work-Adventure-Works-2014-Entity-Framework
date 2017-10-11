@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using EMS2.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using EMS2.Models;
-
+using System.Data.SqlClient;
 
 namespace EMS2.Controllers
 {
@@ -54,13 +54,54 @@ namespace EMS2.Controllers
             return Json(ilIst);
         }
         [HttpPost]
-        public IActionResult AddEmployee([FromBody]Employee empObj)
+        public IActionResult AddEmployee([FromBody]PersonEmployee x ,Employee empObj )
         {
-            
-            _context.Employee.Add(empObj);
-            _context.SaveChanges();
-            return Json("OK");
+            string connetionString = null;
+            SqlConnection connection;
+            SqlCommand command;
+            string sql = null;
 
+            connetionString = "Data Source=localhost;Initial Catalog=AdventureWorks2014;Integrated Security=True";
+            sql = "insert into Person.BusinessEntity (rowguid) values(default)" +
+                  "Declare @x int = (select MAX(BusinessEntityID)from Person.BusinessEntity);" +
+                  "insert into Person.Person (BusinessEntityID, PersonType, NameStyle, FirstName, LastName, EmailPromotion, rowguid, ModifiedDate)" +
+                  "values((select MAX(BusinessEntityID)from Person.BusinessEntity),'EM',0,'" + x.FirstName.ToString() + "','" + x.LastName.ToString() + "',2," +
+                  "(select rowguid from Person.BusinessEntity where BusinessEntityID = @x), SYSDATETIME()); " +
+                  "insert into Person.PersonPhone ( BusinessEntityID, PhoneNumber, PhoneNumberTypeID, ModifiedDate)" +
+                  "values(@x, '" + x.PhoneNumber.ToString() + "', '1', SYSDATETIME());" +
+                  "Declare @e int = ((select MAX(EmailAddressID) from Person.EmailAddress)+1);" +
+                  "SET IDENTITY_INSERT  Person.EmailAddress ON;" +
+                  "insert into Person.EmailAddress(BusinessEntityID, EmailAddressID, EmailAddress, rowguid, ModifiedDate)" +
+                  "values(@x, @e, '" + x.EmailAddress.ToString() + "', " +
+                  "(select rowguid from Person.Person where BusinessEntityID=@x), SYSDATETIME());";
+
+            string sql3 =
+                "Declare @x int = (select MAX(BusinessEntityID)from Person.BusinessEntity);" +
+                "DECLARE @k int = ((SELECT COUNT(E.BusinessEntityID) FROM HumanResources.Employee E join Person.Person P on E.BusinessEntityID = P.BusinessEntityID WHERE FirstName = '" + x.LastName.ToLower().ToString() + "')-1)" +
+                "insert into HumanResources.Employee( BusinessEntityID, NationalIDNumber, LoginID, JobTitle, BirthDate, MaritalStatus, Gender, " +
+                "HireDate, SalariedFlag, VacationHours, SickLeaveHours, CurrentFlag, rowguid, ModifiedDate) " +
+                "values(@x, ('NULL' + (SELECT CAST(@x AS VARCHAR(10)))) , 'globallogic/" + x.LastName.ToLower().ToString() +"@k" + "', '"+x.JobTitle.ToString()+"', '1997-06-01','S', 'M', SYSDATETIME(), '1', '0', '0', '1'," +
+                " (select rowguid from Person.BusinessEntity where BusinessEntityID = @x),SYSDATETIME()); ";
+
+
+
+            connection = new SqlConnection(connetionString);
+          
+                connection.Open();
+                command = new SqlCommand(sql, connection);
+                SqlDataReader dr1 = command.ExecuteReader();
+                 connection.Close();
+
+            connection.Open();
+            command = new SqlCommand(sql3, connection);
+            SqlDataReader dr2 = command.ExecuteReader();
+            connection.Close();
+
+
+
+            //_context.Employee.Add(empObj);
+            //_context.SaveChanges();
+            return Json("OK");
 
         }
     }
