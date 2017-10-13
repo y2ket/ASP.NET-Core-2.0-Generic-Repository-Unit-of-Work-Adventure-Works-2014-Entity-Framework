@@ -22,7 +22,7 @@ export class newEmployeeComponent {
             'JobTitle': new FormControl('', Validators.required),
             'EmailAddress': new FormControl('', Validators.required),
             'PhoneNumber': new FormControl('', Validators.required)
-            //'BusinessEntityID': new FormControl('', Validators.required)  
+            
         });
     }
     customValidator(control: FormControl): { [s: string]: boolean } {
@@ -42,7 +42,7 @@ export class newEmployeeComponent {
                 JobTitle: this.formData.value.JobTitle,                
                 EmailAddress: this.formData.value.EmailAddress,
                 PhoneNumber: this.formData.value.PhoneNumber
-                //BusinessEntityID: this.formData.value.BusinessEntityID
+                
             };
             this.empService.postData(Obj).subscribe();
             alert("Employee Inserted Successfully");

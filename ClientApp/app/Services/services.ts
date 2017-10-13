@@ -12,6 +12,9 @@ export class EmployeeServices {
     getJobTitlesList() {
         return this.http.get('http://localhost:62362/api/jobtitles');
     }
+    getEmployeeDetails(empId: any) {
+        return this.http.get('http://localhost:62362/api/employee/' + empId);
+    }  
 
     postData(empObj: any) {
         let headers = new Headers({

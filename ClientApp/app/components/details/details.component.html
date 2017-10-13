@@ -6,5 +6,24 @@
 </head>
 <body>
     <h2>This is Detail Component</h2>   
+    <div class="row">
+        <div class="col-md-3"><b>Employee First Name</b></div><div class="col-md-3">{{EmployeeDetails.FirstName}}</div>
+    </div>
+    <div class="row">
+        <div class="col-md-3"><b>Employee Last Name</b></div><div class="col-md-3">{{EmployeeDetails.LastName}}</div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3"><b>Job Title</b></div><div class="col-md-3">{{EmployeeDetails.JobTitle}}</div>
+    </div>
+    <div class="row">
+        <div class="col-md-3"><b>Email Address</b></div><div class="col-md-3">{{EmployeeDetails.EmailAddress}}</div>
+    </div>
+    <div class="row">
+        <div class="col-md-3"><b>National ID Number</b></div><div class="col-md-3">{{EmployeeDetails.NationalIdnumber}}</div>
+    </div>
+    <div class="row">
+        <div class="col-md-3"><b>Birth Date</b></div><div class="col-md-3">{{EmployeeDetails.BirthDate|date: 'yMMMMd'}}</div>
+    </div>    
 </body>
 </html>

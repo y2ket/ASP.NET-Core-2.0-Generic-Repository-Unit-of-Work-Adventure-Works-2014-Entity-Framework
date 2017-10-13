@@ -54,55 +54,60 @@ namespace EMS2.Controllers
             return Json(ilIst);
         }
         [HttpPost]
-        public IActionResult AddEmployee([FromBody]PersonEmployee x ,Employee empObj )
+        public IActionResult AddEmployee([FromBody]PersonEmployee empObj)
         {
-            string connetionString = null;
-            SqlConnection connection;
-            SqlCommand command;
-            string sql = null;
-
-            connetionString = "Data Source=localhost;Initial Catalog=AdventureWorks2014;Integrated Security=True";
-            sql = "insert into Person.BusinessEntity (rowguid) values(default)" +
+            string queryString = "insert into Person.BusinessEntity (rowguid) values(default)" +
                   "Declare @x int = (select MAX(BusinessEntityID)from Person.BusinessEntity);" +
                   "insert into Person.Person (BusinessEntityID, PersonType, NameStyle, FirstName, LastName, EmailPromotion, rowguid, ModifiedDate)" +
-                  "values((select MAX(BusinessEntityID)from Person.BusinessEntity),'EM',0,'" + x.FirstName.ToString() + "','" + x.LastName.ToString() + "',2," +
+                  "values((select MAX(BusinessEntityID)from Person.BusinessEntity),'EM',0,'" + empObj.FirstName.ToString() + "','" + empObj.LastName.ToString() + "',2," +
                   "(select rowguid from Person.BusinessEntity where BusinessEntityID = @x), SYSDATETIME()); " +
                   "insert into Person.PersonPhone ( BusinessEntityID, PhoneNumber, PhoneNumberTypeID, ModifiedDate)" +
-                  "values(@x, '" + x.PhoneNumber.ToString() + "', '1', SYSDATETIME());" +
+                  "values(@x, '" + empObj.PhoneNumber.ToString() + "', '1', SYSDATETIME());" +
                   "Declare @e int = ((select MAX(EmailAddressID) from Person.EmailAddress)+1);" +
                   "SET IDENTITY_INSERT  Person.EmailAddress ON;" +
                   "insert into Person.EmailAddress(BusinessEntityID, EmailAddressID, EmailAddress, rowguid, ModifiedDate)" +
-                  "values(@x, @e, '" + x.EmailAddress.ToString() + "', " +
-                  "(select rowguid from Person.Person where BusinessEntityID=@x), SYSDATETIME());";
+                  "values(@x, @e, '" + empObj.EmailAddress.ToString() + "', " +
+                  "(select rowguid from Person.Person where BusinessEntityID=@x), SYSDATETIME());" +
+                  "Declare @k int = ((SELECT COUNT(E.BusinessEntityID) FROM HumanResources.Employee E join Person.Person P on E.BusinessEntityID = P.BusinessEntityID WHERE FirstName = '" + empObj.LastName.ToLower().ToString() + "')-1)" +
+                  "insert into HumanResources.Employee( BusinessEntityID, NationalIDNumber, LoginID, JobTitle, BirthDate, MaritalStatus, Gender, " +
+                  "HireDate, SalariedFlag, VacationHours, SickLeaveHours, CurrentFlag, rowguid, ModifiedDate) " +
+                  "values(@x, ('NULL' + (SELECT CAST(@x AS VARCHAR(10)))) , 'globallogic/" + empObj.LastName.ToLower().ToString() + "@k" + "', '" + empObj.JobTitle.ToString() + "', '1997-06-01','S', 'M', SYSDATETIME(), '1', '0', '0', '1'," +
+                  " (select rowguid from Person.BusinessEntity where BusinessEntityID = @x),SYSDATETIME());";
 
-            string sql3 =
-                "Declare @x int = (select MAX(BusinessEntityID)from Person.BusinessEntity);" +
-                "DECLARE @k int = ((SELECT COUNT(E.BusinessEntityID) FROM HumanResources.Employee E join Person.Person P on E.BusinessEntityID = P.BusinessEntityID WHERE FirstName = '" + x.LastName.ToLower().ToString() + "')-1)" +
-                "insert into HumanResources.Employee( BusinessEntityID, NationalIDNumber, LoginID, JobTitle, BirthDate, MaritalStatus, Gender, " +
-                "HireDate, SalariedFlag, VacationHours, SickLeaveHours, CurrentFlag, rowguid, ModifiedDate) " +
-                "values(@x, ('NULL' + (SELECT CAST(@x AS VARCHAR(10)))) , 'globallogic/" + x.LastName.ToLower().ToString() +"@k" + "', '"+x.JobTitle.ToString()+"', '1997-06-01','S', 'M', SYSDATETIME(), '1', '0', '0', '1'," +
-                " (select rowguid from Person.BusinessEntity where BusinessEntityID = @x),SYSDATETIME()); ";
-
-
-
-            connection = new SqlConnection(connetionString);
-          
+            using (SqlConnection connection = new SqlConnection("Data Source=localhost;Initial Catalog=AdventureWorks2014;Integrated Security=True"))
+            {
+                SqlCommand command = new SqlCommand(queryString, connection);
                 connection.Open();
-                command = new SqlCommand(sql, connection);
-                SqlDataReader dr1 = command.ExecuteReader();
-                 connection.Close();
-
-            connection.Open();
-            command = new SqlCommand(sql3, connection);
-            SqlDataReader dr2 = command.ExecuteReader();
-            connection.Close();
-
-
-
-            //_context.Employee.Add(empObj);
-            //_context.SaveChanges();
+                SqlDataReader reader = command.ExecuteReader();
+                connection.Close();
+            }          
             return Json("OK");
+        }
 
+        [HttpGet("{Empid}")]
+        public async Task<IActionResult> EmployeeDetails(int Empid)
+        {
+
+            var EmpDetails = await (from pers in _context.Person
+                                    join emp in _context.Employee on pers.BusinessEntityId equals emp.BusinessEntityId
+                                    join email in _context.EmailAddress on pers.BusinessEntityId equals email.BusinessEntityId
+                                    join phone in _context.PersonPhone on pers.BusinessEntityId equals phone.BusinessEntityId
+                                    where emp.BusinessEntityId == Empid
+                                    select new
+                                    {
+                                        emp.BusinessEntityId,
+                                        pers.FirstName,
+                                        pers.LastName,
+                                        emp.JobTitle,
+                                        email.EmailAddress1,
+                                        phone.PhoneNumber,
+                                        emp.NationalIdnumber,
+                                        emp.BirthDate
+                                    }
+                          ).FirstAsync();
+
+
+            return Json(EmpDetails);
         }
     }
 }
