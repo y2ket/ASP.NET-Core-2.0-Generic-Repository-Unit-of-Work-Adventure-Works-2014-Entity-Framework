@@ -5,6 +5,132 @@
     <title></title>
 </head>
 <body>
-    <h1>Edit Employee</h1>   
+    <style>
+        .hidedata {
+            padding-top: 50px;
+        }
+    </style>
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="col-md-8 col-lg-offset-4">
+                <h3>Edit Employee Details</h3>
+            </div>
+
+            <div class="row hidedata" id="hidDiv">
+                <div class="col-md-6 ">
+                    <form class="form-horizontal" [formGroup]="formData" (ngSubmit)="submitData()">
+                        <div class="form-group">
+                            <label for="FirstName" class="col-sm-4 control-label">Employee First Name</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control"
+                                       name="FirstName" placeholder="Employee First Name"
+                                       formControlName="FirstName">
+                            </div>
+                            <div *ngIf="!formData.get('FirstName').valid && formData.get('FirstName').dirty"
+                                 class="col-sm-8 col-sm-offset-4" style="color:red">
+                                Add Employee First Name
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="LastName" class="col-sm-4 control-label">Employee Last Name</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control"
+                                       name="LastName" placeholder="Employee Last Name"
+                                       formControlName="LastName">
+                            </div>
+                            <div *ngIf="!formData.get('LastName').valid && formData.get('LastName').dirty"
+                                 class="col-sm-8 col-sm-offset-4" style="color:red">
+                                Add Employee Last Name
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="EmailAddress" class="col-sm-4 control-label">Email Address</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control"
+                                       name="EmailAddress" placeholder="Employee Email Address"
+                                       formControlName="EmailAddress">
+                            </div>
+                            <div *ngIf="!formData.get('EmailAddress').valid && formData.get('EmailAddress').dirty"
+                                 class="col-sm-8 col-sm-offset-4" style="color:red">
+                                Add Employee Email Address
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="PhoneNumber" class="col-sm-4 control-label">Phone Number</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control"
+                                       name="PhoneNumber" placeholder="Employee Phone Number"
+                                       formControlName="PhoneNumber">
+
+                            </div>
+                            <div *ngIf="!formData.get('PhoneNumber').valid && formData.get('PhoneNumber').dirty"
+                                 class="col-sm-8 col-sm-offset-4" style="color:red">
+                                Add Employee Phone Number 
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="NationalIdnumber" class="col-sm-4 control-label">National ID number</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control"
+                                       name="NationalIdnumber" placeholder="Employee National ID number"
+                                       formControlName="NationalIdnumber">
+
+                            </div>
+                            <div *ngIf="!formData.get('NationalIdnumber').valid && formData.get('NationalIdnumber').dirty"
+                                 class="col-sm-8 col-sm-offset-4" style="color:red">
+                                Add Employee National ID number
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="BirthDate" class="col-sm-4 control-label">Birth Date</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control"
+                                       name="PhoneNumber" placeholder="Employee Birth Date"
+                                       formControlName="BirthDate" >
+
+                            </div>
+                            <div *ngIf="!formData.get('PhoneNumber').valid && formData.get('PhoneNumber').dirty"
+                                 class="col-sm-8 col-sm-offset-4" style="color:red">
+                                Add Employee Birth Date
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="JobTitle" class="col-sm-4 control-label">Job Title</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" name="JobTitle"
+                                        formControlName="JobTitle">
+                                    <option value="0">---Select---</option>
+                                    <option *ngFor="let data of JobTitlesList" value={{data.jobTitle}}>
+                                        {{data.jobTitle}}
+                                    </option>
+                                </select>
+
+                            </div>
+                            <div *ngIf="!formData.get('JobTitle').valid && formData.get('JobTitle').dirty"
+                                 class="col-sm-8 col-sm-offset-4" style="color:red">
+                                Select a Job Title for Employee
+                            </div>
+                        </div>
+                        <div>
+                            <input type="hidden" id="empId" name="empId" formControlName="EmployeeId" />
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-4 col-sm-8">
+                                <button type="submit" [disabled]="!formData.valid" class="btn btn-info">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>   
 </body>
 </html>

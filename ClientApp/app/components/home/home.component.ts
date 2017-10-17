@@ -13,4 +13,20 @@ export class HomeComponent {
             (data: Response) => (this.EmployeeList = data.json())
             );
     }
+
+    deleteEmployee(empId: number) {
+        var status = confirm("Are You want to delete this employee ?");
+        if (status == true) {
+            this.empService.removeEmployeeDetails(empId)
+                .subscribe((data: Response) => (alert("Employee Deleted Successfully")));
+
+            //Get new list of employee  
+            this.empService.getEmployeeList()
+                .subscribe(
+                (data: Response) => (this.EmployeeList = data.json())
+                );
+        }
+    }
 }
+
+

@@ -21,8 +21,7 @@ export class newEmployeeComponent {
             'LastName': new FormControl('', [Validators.required]),
             'JobTitle': new FormControl('', Validators.required),
             'EmailAddress': new FormControl('', Validators.required),
-            'PhoneNumber': new FormControl('', Validators.required)
-            
+            'PhoneNumber': new FormControl('', Validators.required)            
         });
     }
     customValidator(control: FormControl): { [s: string]: boolean } {

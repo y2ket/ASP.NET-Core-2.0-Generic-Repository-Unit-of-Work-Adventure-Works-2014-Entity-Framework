@@ -59,12 +59,12 @@
                            class="btn btn-primary">
                             Detail
                         </a>
-                        <a [routerLink]="['/edit/',empData.businessEntityId]"
+                        <a [routerLink]="['/edit/',empData.businessEntityID]"
                            class="btn btn-success">
                             Edit
                         </a>
                         
-                        <a class="btn btn-danger">
+                        <a class="btn btn-danger" (click)="deleteEmployee(empData.businessEntityID)">
                             Delete
                         </a>
                     </td>

@@ -28,7 +28,7 @@ namespace EMS2.Controllers
             var listData = await (from per in _context.Person 
                                   join emp in _context.Employee on per.BusinessEntityId equals emp.BusinessEntityId
                                   join pp in _context.PersonPhone on per.BusinessEntityId equals pp.BusinessEntityId
-                                  join ea in _context.EmailAddress on per.BusinessEntityId equals ea.BusinessEntityId
+                                  join ea in _context.EmailAddress on per.BusinessEntityId equals ea.BusinessEntityId                                  
                                   select new
                                   {
                                       per.BusinessEntityId,
@@ -36,19 +36,23 @@ namespace EMS2.Controllers
                                       per.FirstName,
                                       emp.JobTitle,
                                       ea.EmailAddress1,
-                                      pp.PhoneNumber
+                                      pp.PhoneNumber,
+                                      emp.CurrentFlag
                                   }
                           ).ToListAsync();
             listData.ForEach(x =>
             {
+            if (x.CurrentFlag == true)
+            {
                 PersonEmployee Obj = new PersonEmployee();
-                Obj.BusinessEntityID = x.BusinessEntityId;
-                Obj.LastName = x.LastName;
-                Obj.FirstName = x.FirstName;
-                Obj.JobTitle = x.JobTitle;
-                Obj.EmailAddress = x.EmailAddress1;
-                Obj.PhoneNumber = x.PhoneNumber;
-                ilIst.Add(Obj);
+                    Obj.BusinessEntityID = x.BusinessEntityId;
+                    Obj.LastName = x.LastName;
+                    Obj.FirstName = x.FirstName;
+                    Obj.JobTitle = x.JobTitle;
+                    Obj.EmailAddress = x.EmailAddress1;
+                    Obj.PhoneNumber = x.PhoneNumber;
+                    ilIst.Add(Obj);
+                }
             });
 
             return Json(ilIst);
@@ -108,6 +112,48 @@ namespace EMS2.Controllers
 
 
             return Json(EmpDetails);
+        }
+
+        [HttpDelete]
+        public IActionResult RemoveEmployeeDetails([FromBody]int empId)
+        {
+            Employee Emp;
+            Emp = _context.Employee.Where(x => x.BusinessEntityId == empId).First();
+            _context.Employee.Remove(Emp);
+            _context.SaveChanges();
+
+            
+
+            return Json("OK");
+        }
+        [HttpPut]
+        public IActionResult EditEmployee([FromBody]PersonEmployee empData)
+        {
+            string queryString = "update HumanResources.Employee " +
+                "set JobTitle = '" + empData.JobTitle + "', " +
+                "NationalIDNumber = '" + empData.NationalIDNumber + "', " +
+                "BirthDate = '" + empData.BirthDate + "' " +
+                "where BusinessEntityID = '" + empData.BusinessEntityID + "'; " +
+                "update Person.PersonPhone " +
+                "set PhoneNumber = '" + empData.PhoneNumber + "' " +
+                "where BusinessEntityID = '" + empData.BusinessEntityID + "'; " +
+                "update Person.Person " +
+                "set FirstName = '" + empData.FirstName + "', " +
+                "LastName = '" + empData.LastName + "' " +
+                "where BusinessEntityID = '" + empData.BusinessEntityID + "'; " +
+                "update Person.EmailAddress " +
+                "set EmailAddress= '" + empData.EmailAddress + "' " +
+                "where BusinessEntityID = '" + empData.BusinessEntityID + "'; ";        
+
+            using (SqlConnection connection = new SqlConnection("Data Source=localhost;Initial Catalog=AdventureWorks2014;Integrated Security=True"))
+            {
+                SqlCommand command = new SqlCommand(queryString, connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                connection.Close();
+            }
+
+            return Json("OK");
         }
     }
 }
