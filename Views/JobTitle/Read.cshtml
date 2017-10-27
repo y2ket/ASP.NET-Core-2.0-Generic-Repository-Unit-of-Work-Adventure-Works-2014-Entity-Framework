@@ -1,0 +1,45 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using EMS2.ViewModel;
+@addTagHelper "*, EMS2"
+@model List<JobTitles>
+@*@model IndexJobTitle*@
+
+@{
+    ViewBag.Title = "Read";
+}
+
+<div>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        Number
+                    </th>
+                    <th>
+                        Job Title Name
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (JobTitles emp in Model)
+                {
+                    <tr>
+                        <td>
+                            <p>@emp.JobTitleId</p>
+                            @*<p>@emp.JobTitleId</p>*@
+                        </td>
+                        <td>
+                            <p>@emp.JobTitle</p>
+                            @*<p>@emp.JobTitle</p>*@
+                        </td>
+                        </tr>
+                    }
+            </table>
+            <div>
+                @*<paging-job-title job-title-model="Model.JobTitlesViewModel_" page-action="Process"></paging-job-title>*@
+            </div>
+        </div>
+    </div>

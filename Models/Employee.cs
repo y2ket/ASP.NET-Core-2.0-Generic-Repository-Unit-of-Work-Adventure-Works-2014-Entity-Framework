@@ -36,4 +36,6 @@ namespace EMS2.Models
         public ICollection<JobCandidate> JobCandidate { get; set; }
         public ICollection<PurchaseOrderHeader> PurchaseOrderHeader { get; set; }
     }
+
+    
 }

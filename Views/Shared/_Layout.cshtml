@@ -1,16 +1,35 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - EMS2</title>
-    <base href="~/" />
+﻿@*<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"] - EMS2</title>
+        <base href="~/" />
 
-    <link rel="stylesheet" href="~/dist/vendor.css" asp-append-version="true" />
-</head>
-<body>
+        <link rel="stylesheet" href="~/dist/vendor.css" asp-append-version="true" />
+    </head>
+    <body>
+        @RenderBody()
+
+        @RenderSection("scripts", required: false)
+    </body>
+    </html>*@
+
+<div>
+    <table>
+        <tr>
+            <th>
+                @Html.ActionLink("Employees", "Read", "People")
+            </th>
+        </tr>  
+
+        <tr>
+            <th>
+                @Html.ActionLink("Job Titles", "Read", "JobTitle")
+            </th>
+        </tr>
+</table>
+</div>
+ <div>
     @RenderBody()
-
-    @RenderSection("scripts", required: false)
-</body>
-</html>
+ </div>
