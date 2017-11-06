@@ -3,8 +3,9 @@
 }
 @using EMS2.ViewModel;
 @addTagHelper "*, EMS2"
-@model List<PersonEmployee>
-@*@model IndexJobTitle*@
+@*@model List<PersonEmployee>*@
+@model IndexPersonEmployeeViewModel
+
 
 @{
     ViewBag.Title = "Read";
@@ -39,47 +40,86 @@
                 </tr>
             </thead>
             <tbody>                
-                @for (int i = 0; i < Model.Count; i++)
+                @*@for (int i = 0; i < Model.PersonEmployees.Count; i++)
                 {
                     <tr>
                         <td>
                             <p>@(i + 1)</p>
-                            @*<p>@emp.JobTitleId</p>*@
+                           
                         </td>
                         <td>
-                            <p>@Model[@i].LastName</p>
-                            @*<p>@emp.JobTitle</p>*@
+                            <p>@Model.PersonEmployees[@i].LastName</p>
+                           
                         </td>
                         <td>
-                            <p>@Model[@i].FirstName</p>
+                            <p>@Model.PersonEmployees[@i].FirstName</p>
                         </td>
                         <td>
-                            <p>@Model[@i].JobTitle</p>
+                            <p>@Model.PersonEmployees[@i].JobTitle</p>
                         </td>
                         <td>
-                            <p>@Model[@i].EmailAddress</p>
+                            <p>@Model.PersonEmployees[@i].EmailAddress</p>
                         </td>
                         <td>
-                            <p>@Model[@i].PhoneNumber</p>
+                            <p>@Model.PersonEmployees[@i].PhoneNumber</p>
                         </td>
                         <td>
-                            <p>@Model[@i].BirthDate</p>
+                            <p>@Model.PersonEmployees[@i].BirthDate</p>
                         </td>
                         <td>
-                            @Html.ActionLink("Details", "FindById", "People", new { BusinessEntityId = Model[i].BusinessEntityID }, null)
+                            @Html.ActionLink("Details", "FindById", "People", new { BusinessEntityId = Model.PersonEmployees[i].BusinessEntityID }, null)
                         </td>
                         <td>
-                            <a asp-action="Update" asp-route-id="@Model[i].BusinessEntityID">Edit</a>
+                            <a asp-action="Update" asp-route-id="@Model.PersonEmployees[i].BusinessEntityID">Edit</a>
                         </td>
                         <td>
-                            <a asp-action="Delete" asp-route-id="@Model[i].BusinessEntityID">Delete</a>
+                            <a asp-action="Delete" asp-route-id="@Model.PersonEmployees[i].BusinessEntityID">Delete</a>
                         </td>
                     </tr>  
-                }
-                
+                }*@
+              
+               @foreach (var item in Model.PersonEmployees)
+               {
+                <tr>
+                    <td>
+                        <p>@((Model.PersonEmployees.IndexOf(item)+1) + 20 * (Model.PersonEmployeeViewModel.PageNumber-1)  )</p>
+                    </td>
+                    <td>
+                        <p>@item.LastName</p>
+
+                    </td>
+                    <td>
+                        <p>@item.FirstName</p>
+                    </td>
+                    <td>
+                        <p>@item.JobTitle</p>
+                    </td>
+                    <td>
+                        <p>@item.EmailAddress</p>
+                    </td>
+                    <td>
+                        <p>@item.PhoneNumber</p>
+                    </td>
+                    <td>
+                        <p>@item.BirthDate</p>
+                    </td>
+                    <td>
+                        @Html.ActionLink("Details", "FindById", "People", new { BusinessEntityId = item.BusinessEntityID }, null)
+                    </td>
+                    <td>
+                        <a asp-action="Update" asp-route-id="@item.BusinessEntityID">Edit</a>
+                    </td>
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@item.BusinessEntityID">Delete</a>
+                    </td>
+                </tr>
+               }
+
         </table>
+        <br />
+       
         <div>
-            @*<paging-job-title job-title-model="Model.JobTitlesViewModel_" page-action="Process"></paging-job-title>*@
+            <paging-person-employee person-employee-model="Model.PersonEmployeeViewModel" page-action="Read"></paging-person-employee>
         </div>
     </div>
 </div>

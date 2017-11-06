@@ -22,4 +22,37 @@ namespace EMS2.ViewModel
         public string MaritalStatus { get; set; }
 
     }
+    public class PersonEmployeeViewModel
+    {
+        public int PageNumber { get; private set; }
+        public int TotalPages { get; private set; }
+
+        public PersonEmployeeViewModel(int count, int pageNumber, int pageSize)
+        {
+            PageNumber = pageNumber;
+            TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+        }
+
+        public bool HasPreviousPage
+        {
+            get
+            {
+                return (PageNumber > 1);
+            }
+        }
+
+        public bool HasNextPage
+        {
+            get
+            {
+                return (PageNumber < TotalPages);
+            }
+        }
+    }
+
+    public class IndexPersonEmployeeViewModel
+    {
+        public List<PersonEmployee> PersonEmployees { get; set; }
+        public PersonEmployeeViewModel PersonEmployeeViewModel { get; set; }
+    }
 }

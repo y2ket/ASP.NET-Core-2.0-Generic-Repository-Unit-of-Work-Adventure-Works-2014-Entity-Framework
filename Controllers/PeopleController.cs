@@ -214,7 +214,24 @@ namespace EMS2.Controllers
                 y.PhoneNumber = c.PhoneNumber;
                 employees.Add(y);
             }
-            return View(employees);
+
+            //return View(employees);
+            //IEnumerable<PersonEmployee> perEmpsPerPages = employees.Skip((page - 1) * pageSize).Take(pageSize);
+            //PageInfo pageInfo = new PageInfo { PageNumber = page, PageSize = pageSize, TotalItems = employees.Count };
+            //IndexViewModel ivm = new IndexViewModel { PageInfo = pageInfo, perEmps = perEmpsPerPages };
+            //return View(ivm);
+
+            var count = employees.Count();
+            var items = employees.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            PersonEmployeeViewModel empViewModel = new PersonEmployeeViewModel(count, page, pageSize);
+            IndexPersonEmployeeViewModel viewModel = new IndexPersonEmployeeViewModel
+            {
+                PersonEmployeeViewModel = empViewModel,
+                PersonEmployees = items
+            };
+
+            return View(viewModel);
         }
         [HttpGet]
         public ActionResult FindById(int businessEntityId)

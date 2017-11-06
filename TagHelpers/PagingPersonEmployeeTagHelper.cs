@@ -1,25 +1,23 @@
-﻿using EMS2.Models;
-using EMS2.ViewModel;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using EMS2.ViewModel;
 
-
-namespace EMS2.TagHelpers
+namespace Angular2Core.Helpers
 {
-    public class PagingJobTitleTagHelper : TagHelper
+    public class PagingPersonEmployeeTagHelper : TagHelper
     {
         private IUrlHelperFactory urlHelperFactory;
-        protected PagingJobTitleTagHelper(IUrlHelperFactory helperFactory)
+        public PagingPersonEmployeeTagHelper(IUrlHelperFactory helperFactory)
         {
             urlHelperFactory = helperFactory;
         }
         [ViewContext]
         [HtmlAttributeNotBound]
         public ViewContext ViewContext { get; set; }
-        public JobTitlesViewModel JobTitleModel { get; set; }
+        public PersonEmployeeViewModel PersonEmployeeModel { get; set; }
         public string PageAction { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
@@ -30,12 +28,10 @@ namespace EMS2.TagHelpers
             TagBuilder tag = new TagBuilder("ul");
             tag.AddCssClass("pagination");
 
-            TagBuilder currentItem = CreateTag(JobTitleModel.PageNumber, urlHelper);
-
-            if (JobTitleModel.HasPreviousPage)
+            if (PersonEmployeeModel.HasPreviousPage)
             {
                 int page = 1;
-                while (page <= JobTitleModel.PageNumber - 1)
+                while (page <= PersonEmployeeModel.PageNumber - 1)
                 {
                     TagBuilder prevItem = CreateTag(page, urlHelper);
                     tag.InnerHtml.AppendHtml(prevItem);
@@ -43,12 +39,13 @@ namespace EMS2.TagHelpers
                 }
             }
 
+            TagBuilder currentItem = CreateTag(PersonEmployeeModel.PageNumber, urlHelper);
             tag.InnerHtml.AppendHtml(currentItem);
 
-            if (JobTitleModel.HasNextPage)
+            if (PersonEmployeeModel.HasNextPage)
             {
-                int page = JobTitleModel.PageNumber + 1;
-                while (page <= JobTitleModel.TotalPages)
+                int page = PersonEmployeeModel.PageNumber + 1;
+                while (page <= PersonEmployeeModel.TotalPages)
                 {
                     TagBuilder nextItem = CreateTag(page, urlHelper);
                     tag.InnerHtml.AppendHtml(nextItem);
@@ -62,7 +59,7 @@ namespace EMS2.TagHelpers
         {
             TagBuilder item = new TagBuilder("li");
             TagBuilder link = new TagBuilder("a");
-            if (pageNumber == JobTitleModel.PageNumber)
+            if (pageNumber == PersonEmployeeModel.PageNumber)
             {
                 item.AddCssClass("active");
             }
