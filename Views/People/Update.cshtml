@@ -1,18 +1,19 @@
-﻿@{    
+﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Update";
 }
 @model EMS2.ViewModel.PersonEmployee
 
 
-<h2>Create</h2>
-<form asp-action="Create" asp-controller="People">
+<h2>Update</h2>
+<form asp-action="Update" asp-controller="People">
     <div class="form-horizontal">
-        <h4>Person</h4>
+        <h4>Update</h4>
         <hr />
-        
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="BusinessEntityID" />
         <div class="form-group">
             <label asp-for="FirstName" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -29,8 +30,8 @@
         </div>
         <div class="form-group">
             <label asp-for="Gender" class="col-md-2 control-label"></label>
-            <div class="col-md-10">                
-                <select asp-for="Gender" class="form-control" >
+            <div class="col-md-10">
+                <select asp-for="Gender" class="form-control">
                     <option>M</option>
                     <option>F</option>
                 </select>
@@ -38,22 +39,22 @@
             </div>
         </div>
         @*<div class="form-group">
-            <label asp-for="JobTitle" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="JobTitle" class="form-control" />
-                <span asp-validation-for="JobTitle" class="text-danger"></span>
-            </div>
-        </div>*@
+                <label asp-for="JobTitle" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="JobTitle" class="form-control" />
+                    <span asp-validation-for="JobTitle" class="text-danger"></span>
+                </div>
+            </div>*@
         <div class="form-group">
             <label asp-for="JobTitle" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <select asp-for="JobTitle" >
+                <select asp-for="JobTitle">
                     @foreach (object JobTitle in ViewBag.JobTitles)
                     {
-                        string state = JobTitle.ToString();                      
+                        string state = JobTitle.ToString();
                         state = state.Remove(0, 12);
                         char[] symbs = { '}', ' ' };
-                        state = state.Trim(symbs);                     
+                        state = state.Trim(symbs);
 
                         <option>@state</option>
                     }
@@ -68,7 +69,7 @@
                 <span asp-validation-for="NationalIDNumber" class="text-danger"></span>
             </div>
         </div>
-        
+
         <div class="form-group">
             <label asp-for="EmailAddress" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -76,7 +77,7 @@
                 <span asp-validation-for="EmailAddress" class="text-danger"></span>
             </div>
         </div>
-   
+
         <div class="form-group">
             <label asp-for="PhoneNumber" class="col-md-2 control-label"></label>
             <div class="col-md-10">

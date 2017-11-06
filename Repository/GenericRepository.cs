@@ -28,25 +28,19 @@ namespace EMS2.Repository
             }            
 
         }
-
         public void Create(TEntity entity)
         {
             _dbSet.Add(entity);
-           // _context.SaveChanges();
-        }
+        }     
 
         public void Delete(TEntity entity)
         {
             _dbSet.Remove(entity);
         }
-
         public TEntity FindById(int businessEntityID)
         {
             return _dbSet.Find(businessEntityID);
         }
-
-     
-
         public IEnumerable<TEntity> Read()
         {
             return _dbSet.AsNoTracking().ToList();       

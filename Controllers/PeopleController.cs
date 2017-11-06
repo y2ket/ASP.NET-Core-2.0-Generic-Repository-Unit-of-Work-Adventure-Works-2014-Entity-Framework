@@ -13,8 +13,8 @@ using System.Data;
 
 namespace EMS2.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/Employee")]
+    //[Produces("application/json")]
+    //[Route("api/Employee")]
     public class PeopleController : Controller
     {
         private readonly AdventureWorks2014Context _context;
@@ -26,14 +26,10 @@ namespace EMS2.Controllers
         IGenericRepository<PersonPhone> _dbPhn;
         IGenericRepository<BusinessEntity> _dbBis;
 
-
-
-
         public PeopleController(AdventureWorks2014Context context)
         {
             _context = context;
             _unitOfWork = new UnitOfWork(_context);
-            
             _dbEmp = _unitOfWork.GenericRepository<Employee>();
             _dbPer = _unitOfWork.GenericRepository<Person>();
             _dbPhn = _unitOfWork.GenericRepository<PersonPhone>();
@@ -176,7 +172,6 @@ namespace EMS2.Controllers
         //    return Json("OK");
         //}
         #endregion
-
         [HttpGet]
         public ActionResult Read(int page = 1)
         {
@@ -187,7 +182,7 @@ namespace EMS2.Controllers
             List<EmailAddress> email = null;
             List<PersonPhone> phones = null;
             List<PersonEmployee> employees = new List<PersonEmployee>();
-          
+
             using (BussinessTransaction bt = new BussinessTransaction(_unitOfWork))
             {
                 bt.Execute(() =>
@@ -195,10 +190,10 @@ namespace EMS2.Controllers
                     employees_ = _dbEmp.Read().ToList();
                     people = _dbPer.Read().ToList();
                     phones = _dbPhn.Read().ToList();
-                    email = _dbEml.Read().ToList();                   
+                    email = _dbEml.Read().ToList();
                 });
-            }        
-       
+            }
+
             for (int i = 0; i < employees_.Count(); i++)
             {
                 PersonEmployee y = new PersonEmployee();
@@ -219,44 +214,275 @@ namespace EMS2.Controllers
                 y.PhoneNumber = c.PhoneNumber;
                 employees.Add(y);
             }
-
-            
-          
-          
-               
-            //var count = jobTitles.Count();     
-            //var items = jobTitles.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-
-            //JobTitlesViewModel employee = new JobTitlesViewModel(count, page, pageSize);
-            //IndexJobTitle viewModel = new IndexJobTitle
-            //{
-            //    JobTitlesViewModel_ = employee,
-            //    JobTitles_ = items
-            //};
-            //return View(viewModel);
-
             return View(employees);
+        }
+        [HttpGet]
+        public ActionResult FindById(int businessEntityId)
+        {
+            Employee employee = new Employee();
+            Person person = new Person();
+            EmailAddress email = _context.EmailAddress.First(a => a.BusinessEntityId == businessEntityId); 
+            PersonPhone phone =  _context.PersonPhone.First(a => a.BusinessEntityId == businessEntityId);
+            PersonEmployee perEmp = new  PersonEmployee();
+
+
+            using (BussinessTransaction bt = new BussinessTransaction(_unitOfWork))
+            {
+                bt.Execute(() =>
+                {
+                    employee = _dbEmp.FindById(businessEntityId);
+                    person = _dbPer.FindById(businessEntityId);
+                   
+                });
+            }
+            perEmp.BusinessEntityID = person.BusinessEntityId;
+            perEmp.BirthDate = employee.BirthDate.ToShortDateString();
+            perEmp.EmailAddress = email.EmailAddress1;
+            perEmp.FirstName = person.FirstName;
+            perEmp.LastName = person.LastName;
+            perEmp.LoginId = employee.LoginId;
+            perEmp.MaritalStatus = employee.MaritalStatus;
+            List<DateTime> time = new List<DateTime>(4);
+            time.Add(employee.ModifiedDate);
+            time.Add(person.ModifiedDate);
+            time.Add(email.ModifiedDate);
+            time.Add(perEmp.ModifiedDate);
+            perEmp.ModifiedDate = time.Max();
+            perEmp.NationalIDNumber = employee.NationalIdnumber;
+            perEmp.PhoneNumber = phone.PhoneNumber;
+            perEmp.Rowguid = person.Rowguid;
+            perEmp.JobTitle = employee.JobTitle;
+            perEmp.Gender = employee.Gender;
+
+            return View(perEmp);
         }
 
         [HttpPost]
-        public ActionResult Create([FromForm]Address addressData)
+        public ActionResult Create([FromForm]PersonEmployee inserted)
         {
+            List<EmailAddress> email = null;
+
+
+           
+            BusinessEntity o = new BusinessEntity();
+            o.ModifiedDate = DateTime.Now;
+            o.Rowguid = Guid.NewGuid();
+
+            Person per = new Person();
+            per.FirstName = inserted.FirstName;
+            per.LastName = inserted.LastName;
+            per.NameStyle = false;
+            per.PersonType = "EM";
+
+
+            PersonPhone phn = new PersonPhone();
+            phn.ModifiedDate = o.ModifiedDate;
+            phn.PhoneNumber = inserted.PhoneNumber;
+            phn.PhoneNumberTypeId = 1;
+
+
+            EmailAddress eml = new EmailAddress();
+            eml.EmailAddress1 = inserted.EmailAddress;
+            eml.ModifiedDate = o.ModifiedDate;
+            eml.Rowguid = o.Rowguid;
+
+            Employee emp = new Employee();
+            emp.BirthDate = Convert.ToDateTime(inserted.BirthDate);
+            emp.Gender = inserted.Gender;
+            emp.NationalIdnumber = inserted.NationalIDNumber;
+            emp.LoginId = "globallogic/" + inserted.LastName.ToLower() + inserted.BusinessEntityID.ToString();
+            emp.MaritalStatus = "S";
+            emp.HireDate = DateTime.Now;
+            emp.SalariedFlag = true;
+            emp.VacationHours = 0;
+            emp.SickLeaveHours = 0;
+            emp.CurrentFlag = true;
+            emp.Rowguid = o.Rowguid;
+            emp.ModifiedDate = o.ModifiedDate;
+            emp.JobTitle = inserted.JobTitle;
+
             using (BussinessTransaction bt = new BussinessTransaction(_unitOfWork)) // Retry Policy
             {
                 bt.Execute(IsolationLevel.ReadUncommitted, () => // Retry Policy
                 {
                     if (ModelState.IsValid)   // Without this shit
                     {
-                        BusinessEntity o = new BusinessEntity();
-                        o.ModifiedDate = DateTime.Now;
-                        o.Rowguid = Guid.NewGuid();
-                        _dbBis.Create(o);                        
+                        _dbBis.Create(o);
+                        _unitOfWork.Save();
+                    }
+                });
+
+                per.BusinessEntityId = _dbBis.Read().Max(l => l.BusinessEntityId);
+                phn.BusinessEntityId = per.BusinessEntityId;
+                emp.BusinessEntityId = per.BusinessEntityId;
+                per.Rowguid = o.Rowguid;
+                eml.BusinessEntityId = per.BusinessEntityId;
+                emp.BusinessEntityId = per.BusinessEntityId;
+
+                using (BussinessTransaction btn = new BussinessTransaction(_unitOfWork)) // Retry Policy
+                {
+                    btn.Execute(IsolationLevel.ReadUncommitted, () => // Retry Policy
+                    {
+                        _dbPer.Create(per);
+                        _dbPhn.Create(phn);
+                        _dbEml.Create(eml);
+                        _dbEmp.Create(emp);
+                        _unitOfWork.Save();
+                    });
+
+                    return RedirectToAction("Read");
+                }
+            }
+        }
+        public ActionResult Create()
+        {
+            ViewBag.JobTitles = (from jobs in _context.Employee select new { jobs.JobTitle }).Distinct().ToList();
+            return View();
+        }
+
+        [HttpGet]
+        [ActionName("Delete")]
+        public ActionResult ConfirmDelete(int id)
+        {
+            Employee emp = null;
+
+            using (BussinessTransaction bt = new BussinessTransaction(_unitOfWork))
+            {
+                bt.Execute(() =>
+                {
+                    emp = _dbEmp.FindById(id);
+                });
+            }
+            return View(emp);
+        }
+        [HttpPost]
+        public ActionResult Delete(int id)
+        {
+            using (BussinessTransaction bt = new BussinessTransaction(_unitOfWork))
+            {
+                bt.Execute(() =>
+                {
+                    Employee emp = null;
+                    emp = _context.Employee.First(a => a.BusinessEntityId == id);
+                    _dbEmp.Delete(emp);
+                    _unitOfWork.Save();
+                });
+            }
+            return RedirectToAction("Read");
+        }
+
+        public ActionResult Update(int id)
+        {
+            Employee emp = null;
+            List<Employee> employees_ = null;
+            List<Person> people = null;
+            List<EmailAddress> email = null;
+            List<PersonPhone> phones = null;
+            using (BussinessTransaction bt = new BussinessTransaction(_unitOfWork))
+            {
+                bt.Execute(() =>
+                {
+                    emp = _dbEmp.FindById(id);
+                    employees_ = _dbEmp.Read().ToList();
+                    people = _dbPer.Read().ToList();
+                    phones = _dbPhn.Read().ToList();
+                    email = _dbEml.Read().ToList();
+                    ViewBag.JobTitles = (from jobs in _context.Employee select new { jobs.JobTitle }).Distinct().ToList();
+                });
+            }
+            //Person per = _context.Person.Where(b => b.BusinessEntityId == id).First();
+            //PersonPhone phn = _context.PersonPhone.Where(b => b.BusinessEntityId == id).First();
+            //EmailAddress eml = _context.EmailAddress.Where(b => b.BusinessEntityId == id).First();
+            Person per = people.Find(x => x.BusinessEntityId == id);
+            PersonPhone phn = phones.Find(x => x.BusinessEntityId == id);
+            EmailAddress eml = email.Find(x => x.BusinessEntityId == id);
+            PersonEmployee perEmp = new PersonEmployee();
+
+            perEmp.BusinessEntityID = emp.BusinessEntityId;
+            perEmp.BirthDate = emp.BirthDate.ToShortDateString();
+            perEmp.EmailAddress = eml.EmailAddress1;
+            perEmp.FirstName = per.FirstName;
+            perEmp.LastName = per.LastName;
+            perEmp.LoginId = emp.LoginId;
+            perEmp.MaritalStatus = emp.MaritalStatus;
+            perEmp.ModifiedDate = emp.ModifiedDate;
+            perEmp.NationalIDNumber = emp.NationalIdnumber;
+            perEmp.PhoneNumber = phn.PhoneNumber;
+            perEmp.Rowguid = emp.Rowguid;
+
+
+            //return View(emp);
+            return View(perEmp);
+        }
+
+        [HttpPost]
+        public ActionResult Update([FromForm]PersonEmployee perEmp)
+        {
+            Employee emp = _context.Employee.Where(b => b.BusinessEntityId == perEmp.BusinessEntityID).FirstOrDefault();
+            Person per = _context.Person.Where(b => b.BusinessEntityId == perEmp.BusinessEntityID).FirstOrDefault();
+            PersonPhone phn = _context.PersonPhone.Where(b => b.BusinessEntityId == perEmp.BusinessEntityID).FirstOrDefault();
+            EmailAddress eml = _context.EmailAddress.Where(b => b.BusinessEntityId == perEmp.BusinessEntityID).FirstOrDefault();
+
+            if (perEmp.EmailAddress!= eml.EmailAddress1)
+            {
+                eml.EmailAddress1 = perEmp.EmailAddress;
+                eml.ModifiedDate = DateTime.Now;
+            }
+            if (perEmp.FirstName != per.FirstName)
+            {
+                per.FirstName = perEmp.FirstName;
+                per.ModifiedDate = DateTime.Now;
+            }
+            if (perEmp.LastName != per.LastName)
+            {
+                per.LastName = perEmp.LastName;
+                per.ModifiedDate = DateTime.Now;
+            }
+            
+            if (Convert.ToDateTime(perEmp.BirthDate) != emp.BirthDate)
+            {
+                emp.BirthDate = Convert.ToDateTime(perEmp.BirthDate);
+                emp.ModifiedDate = DateTime.Now;
+            }
+            if (perEmp.NationalIDNumber != emp.NationalIdnumber)
+            {
+                emp.NationalIdnumber = perEmp.NationalIDNumber;
+                emp.ModifiedDate = DateTime.Now;
+            }
+            if (perEmp.JobTitle != emp.JobTitle)
+            {
+                emp.JobTitle = perEmp.JobTitle;
+                emp.ModifiedDate = DateTime.Now;
+            }
+            bool flag = false;
+            string connection, queryString;
+            queryString =  connection = "";
+            if (perEmp.PhoneNumber != phn.PhoneNumber)
+            {
+                queryString = "update Person.PersonPhone " +
+                "set PhoneNumber = '" + perEmp.PhoneNumber + "' " +
+                "where BusinessEntityID = '" + perEmp.BusinessEntityID + "'; ";
+                connection = "Data Source=localhost;Initial Catalog=AdventureWorks2014;Integrated Security=True";
+                flag = true;
+            }
+           
+            using (BussinessTransaction bt = new BussinessTransaction(_unitOfWork))
+            {
+                bt.Execute(() =>
+                {
+                    if (ModelState.IsValid)
+                    {
+                        _dbPer.Update(per);                        
+                        _dbEml.Update(eml);
+                        _dbEmp.Update(emp);
+                        if (flag)
+                            _dbPhn.Update(queryString, connection);
                         _unitOfWork.Save();
                     }
                 });
                 return RedirectToAction("Read");
             }
         }
+
     }
-    
 }

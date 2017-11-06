@@ -60,7 +60,7 @@ namespace EMS2.Repository
                         catch
                         {
                             transaction.Rollback();
-                            //throw;
+                            throw;
                         }
                     }
 

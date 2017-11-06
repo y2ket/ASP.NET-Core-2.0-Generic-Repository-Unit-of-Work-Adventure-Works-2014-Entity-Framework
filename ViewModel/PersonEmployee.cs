@@ -15,6 +15,11 @@ namespace EMS2.ViewModel
         public string PhoneNumber { get; set; }
         public string NationalIDNumber { get; set; }
         public string BirthDate { get; set; }
+        public string Gender { get; set; }
+        public string LoginId { get; set; }
+        public Guid Rowguid { get; set; }
+        public DateTime ModifiedDate { get; set; }
+        public string MaritalStatus { get; set; }
 
     }
 }

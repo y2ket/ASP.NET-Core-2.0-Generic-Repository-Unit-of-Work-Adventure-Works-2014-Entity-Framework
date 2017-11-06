@@ -65,6 +65,15 @@
                         <td>
                             <p>@Model[@i].BirthDate</p>
                         </td>
+                        <td>
+                            @Html.ActionLink("Details", "FindById", "People", new { BusinessEntityId = Model[i].BusinessEntityID }, null)
+                        </td>
+                        <td>
+                            <a asp-action="Update" asp-route-id="@Model[i].BusinessEntityID">Edit</a>
+                        </td>
+                        <td>
+                            <a asp-action="Delete" asp-route-id="@Model[i].BusinessEntityID">Delete</a>
+                        </td>
                     </tr>  
                 }
                 

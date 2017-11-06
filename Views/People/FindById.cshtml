@@ -1,0 +1,47 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using EMS2.ViewModel;
+@model PersonEmployee
+
+@{
+    ViewBag.Title = "FindById";
+}
+
+<h2>Details </h2>
+<div>
+    <div><b>Business entity ID :</b></div><div>@Model.BusinessEntityID</div>
+</div>
+<div>
+    <div><b>First name :</b></div><div>@Model.FirstName</div>
+</div>
+<div>
+    <div><b>Last name :</b></div><div>@Model.LastName</div>
+</div>
+<div>
+    <div><b>Gender :</b></div><div>@Model.Gender</div>
+</div>
+<div>
+    <div><b>Birth date :</b></div><div>@Model.BirthDate</div>
+</div>
+<div>
+    <div><b>Job title :</b></div><div>@Model.JobTitle</div>
+</div>
+<div>
+    <div><b>Email Address :</b></div><div>@Model.EmailAddress</div>
+</div>
+<div>
+    <div><b>Login ID :</b></div><div>@Model.LoginId</div>
+</div> 
+<div>
+    <div><b>National ID number :</b></div><div>@Model.NationalIDNumber</div>
+</div>
+<div>
+    <div><b>Phone number :</b></div><div>@Model.PhoneNumber</div>
+</div>
+<div>
+    <div><b>Row guid :</b></div><div>@Model.Rowguid</div>
+</div>
+<div>
+    <div><b>Modified date :</b></div><div>@Model.ModifiedDate</div>
+</div>
